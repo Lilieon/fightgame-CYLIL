@@ -25,7 +25,7 @@ const playerInformation = {
 
 const enemyInformation = {
   position: {
-    x: 700,
+    x: 701,
     y: 300,
   },
   color: "red",
