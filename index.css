@@ -1,0 +1,16 @@
+canvas, img {
+  position: absolute;
+}
+
+img {
+  width: 1024px;
+  height: 576px;
+}
+
+#personCanvas {
+  z-index: 5;
+}
+
+#attackCanvas {
+  z-index: 10;
+}
