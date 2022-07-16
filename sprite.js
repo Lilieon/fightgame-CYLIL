@@ -58,7 +58,7 @@ class Personnage {
       this.move(direction);
       const intervalId = setInterval(() => {
         this.move(direction);
-      }, "1000" / this.velocity);
+      }, 1000 / this.velocity);
       queueAction.push({ key: pressKey, intervalId: intervalId });
     } else if (Object.values(this.attackKey).includes(pressKey)) {
       const attack = Object.keys(this.attackKey)[

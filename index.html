@@ -2,16 +2,43 @@
 <html>
 <head>
   <link rel="stylesheet" href="index.css">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    #container {
+      width: 1024px;
+      height: 576px;
+      background-image: url('background.jpeg') ;
+      background-size: contain;
+    }
+  </style>
 </head>
 
 <body>
-  <img src="background.jpeg"></img>
-  <canvas id="personCanvas"></canvas>
-  <canvas id="attackCanvas"></canvas>
-</body>
-</html>
+  <div id="container">
+    <!-- red container div-->
+    <div style="position: relative;">
+      <!-- smaller red container div-->
+      <div style="position: absolute; display: flex; width: 100%; align-items: center; padding: 20px;">
+        <!-- player health-->
+        <div style="background-color: yellow; height: 30px; width: 100%;"></div>
+        <!-- timer-->
+        <div style="background-color: red; height: 100px; width: 100px; flex-shrink: 0;"></div>
+        <!-- enemy health-->
+        <div id="enemyHealth" style="background-color: yellow; height: 30px; width: 100%;"></div>
+      </div>
+      <canvas id="personCanvas"></canvas>
+      <canvas id="attackCanvas"></canvas>
+  
+     </div>
+  </div>
 
 <script src="utils.js"></script>
 <script src="weapon.js"></script>
 <script src="sprite.js"></script>
 <script src="index.js"></script>
+
+</body>
+</html>
