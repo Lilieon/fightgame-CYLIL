@@ -4,6 +4,8 @@ const personnageWidth = 50,
 const attackWidth = 100,
   attackHeight = 50;
 
+const groundY = 450;
+
 const Direction = {
   up: "up",
   down: "down",
@@ -30,6 +32,7 @@ class Personnage {
     this.orientation = orientation;
     this.directionKey = directionKey;
     this.attackKey = attackKey;
+    this.update('x', 0);
   }
 
   getWeapon({ xRange, damage, attackDuration, cooldown }) {
@@ -40,34 +43,64 @@ class Personnage {
     this.clearPerson();
 
     this.position[axe] += this.velocity * facteur;
+
+    if (this.position.y < 0) { this.position.y = 0; }
+
     draw(
       cPerson,
       this.color,
       this.position.x,
-      this.position.y,
+      this.getY(),
       this.width,
       this.height
     );
   }
 
+  getY() {
+    return groundY - personnageHeight - this.position.y;
+  }
+
+  isGrounded() {
+    return this.position.y <= 0;
+  }
+
+  jump() {
+    const gravity = 0.1;
+    let speedY = 1.8;
+
+    const intervalId = setInterval(() => {
+      this.update('y', speedY);
+      speedY -= gravity;
+
+      if (this.isGrounded()) {
+        clearInterval(intervalId);
+      }
+    }, 20);
+  }
+
   action(pressKey) {
-    if (Object.values(this.directionKey).includes(pressKey)) {
-      const direction = Object.keys(this.directionKey)[
-        Object.values(this.directionKey).indexOf(pressKey)
-      ];
+    const direction = Object.entries(this.directionKey).find(([, key]) => key === pressKey)?.[0];
+
+    if (direction) {
       this.move(direction);
+
       const intervalId = setInterval(() => {
         this.move(direction);
       }, 1000 / this.velocity);
+
       queueAction.push({ key: pressKey, intervalId: intervalId });
-    } else if (Object.values(this.attackKey).includes(pressKey)) {
-      const attack = Object.keys(this.attackKey)[
-        Object.values(this.attackKey).indexOf(pressKey)
-      ];
+      return;
+    }
+
+    const attack = Object.entries(this.attackKey).find(([, key]) => key === pressKey)?.[0];
+
+    if (attack) {
       this.attack(attack);
+
       const intervalId = setInterval(() => {
         this.attack(attack);
       }, "200");
+
       queueAction.push({ key: pressKey, intervalId: intervalId });
     }
   }
@@ -75,8 +108,8 @@ class Personnage {
   move(direction) {
     switch (direction) {
       case Direction.down:
-        if (this.position.y + this.height + this.velocity < personCanvas.height) {
-          this.update("y", 1);
+        if (this.position.y + this.height + this.velocity < personCanvas.height && !this.isGrounded()) {
+          this.update("y", -1);
         }
         break;
 
@@ -88,8 +121,8 @@ class Personnage {
         break;
 
       case Direction.up:
-        if (this.position.y + this.velocity > this.velocity) {
-          this.update("y", -1);
+        if (this.isGrounded()) {
+          this.jump();
         }
         break;
 
@@ -109,11 +142,11 @@ class Personnage {
     console.log(attack);
     switch (attack) {
       case "attack":
-        this.weapon.attack(this.position.x, this.position.y, personnageWidth, this.orientation)
+        this.weapon.attack(this.position.x, this.getY(), personnageWidth, this.orientation)
     }
   }
 
   clearPerson() {
-    cPerson.clearRect(this.position.x, this.position.y, this.width, this.height);
+    cPerson.clearRect(this.position.x, this.getY(), this.width, this.height);
   }
 }
